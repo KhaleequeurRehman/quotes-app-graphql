@@ -8,22 +8,24 @@ import typeDefs from './schemaGql.js'
 import jwt from 'jsonwebtoken'
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
+import cors from 'cors'
 import express from 'express';
 import http from 'http';
 dotenv.config()
+import path from 'path';
 
-// import path from 'path';
-// const __dirname = path.resolve();
+const __dirname = path.resolve();
 
 const port = process.env.PORT || 4000;
 const app = express();
+app.use(cors());
 const httpServer = http.createServer(app);
 
 
 // if(process.env.NODE_ENV !=="production"){
 //    dotenv.config()
 // }
-
+ 
 mongoose.connect(process.env.MONGO_URI,{
     useNewUrlParser:true,
     useUnifiedTopology:true
@@ -48,9 +50,12 @@ const context = ({req})=>{
     const { authorization } = req.headers;
     if(authorization){
      const {userId} = jwt.verify(authorization,process.env.JWT_SECRET)
+     console.log('userId -> ',userId)
      return {userId}
+    //  return {userId:'653f690cb596d3a5bc66e134'}
     }
 } 
+
 const server = new ApolloServer({
     typeDefs,
     resolvers,
@@ -65,10 +70,10 @@ const server = new ApolloServer({
 })
 
 // if(process.env.NODE_ENV=="production"){
-//     app.use(express.static('client/build'))
-//     app.get("*",(req,res)=>{
-//         res.sendFile(path.resolve(__dirname,'client','build','index.html'))
-//     })
+    app.use(express.static('client/build'))
+    app.get("*",(req,res)=>{
+        res.sendFile(path.resolve(__dirname,'client','build','index.html'))
+    })
 // }
 
 await server.start();

@@ -14,12 +14,13 @@ export default function Home() {
    if(data?.quotes?.length == 0){
     return  <h2>No Quotes available</h2>
    }
+   console.log('data ',data)
     return (
         <div className="container">
             {
-                data && data.length>0 && data.quotes.map(quote=>{
+                data?.quotes?.map((quote,i)=>{
                     return(
-                   <blockquote>
+                   <blockquote key={i}>
                         <h6>{quote?.name}</h6>
                         <p className="right-align">~{quote?.by?.firstName}</p>
                     </blockquote>
@@ -30,3 +31,17 @@ export default function Home() {
         </div>
     )
 }
+
+
+// {
+//     data?.quotes?.map((item)=>(
+//         <blockquote>
+//         <h6>{item?.name}</h6>
+//         <p className="right-align">~{item?.by?.firstName}</p>
+//         </blockquote>
+//     ))
+// }
+// <blockquote>
+//     <h6>{data?.quotes[0]?.name}ss</h6>
+//     <p className="right-align">~{data?.quotes[0]?.by?.firstName}ss</p>
+// </blockquote>

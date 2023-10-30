@@ -49,10 +49,12 @@ const resolvers = {
          return {token}
         },
         createQuote:async (_,{name},{userId})=>{
+            console.log('userIduserId -> ',userId)
            if(!userId) throw new Error("You must be logged in")
            const newQuote = new Quote({
                name,
                by:userId
+            //    by:'653f690cb596d3a5bc66e134'
            })
            await newQuote.save()
            return "Quote saved successfully"
