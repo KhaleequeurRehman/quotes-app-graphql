@@ -1,7 +1,6 @@
 import React,{useState} from 'react'
 import { useMutation } from '@apollo/client';
 import { CREATE_QUOTE } from '../gqloperations/mutations';
-import { GET_ALL_QUOTES } from '../gqloperations/queries';
 
 export default function CreateQuote() {
     const [quote,setQuote] = useState("")
@@ -19,15 +18,18 @@ export default function CreateQuote() {
                 name:quote
             }
         })
+        setQuote("")
     }
-    if(loading) return <h1>Loading</h1>
 
-    if(error){
-        console.log(error.message)
+    // Handle loading state
+    if (loading) return <h1>Loading...</h1>;
+
+    // Log error to console but show a user-friendly error message
+    if (error) {
+        console.error('Error fetching quotes:', error.message);
+        return <h3>Oops! Something went wrong. <br /> Please try again later.</h3>;  
     }
-    if(data){
-        console.log(data)
-    }
+    
     return (
         <div className="container my-container">
             {

@@ -9,10 +9,12 @@ export default function Profile() {
     })
     
     if(!localStorage.getItem("token")){
-            navigate("/login")
+            navigate("/")
             return <h1>unauthorized</h1>
     }
+    
     if(loading) return <h2>Profile is loading</h2>
+
     if(error){
         console.log(error)
     }

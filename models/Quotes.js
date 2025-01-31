@@ -1,14 +1,15 @@
-import mongoose from 'mongoose'
-const quoteSchema = new mongoose.Schema({
-   name:{
-       type:String,
-       required:true
-   },
-   by:{
-       type:mongoose.Schema.Types.ObjectId,
-       ref:"User"
-   }
-    
-})
+import mongoose from 'mongoose';
 
-mongoose.model("Quote",quoteSchema)
+const quoteSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    by: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    }
+
+}, { timestamps: true });
+
+mongoose.model("Quote", quoteSchema);

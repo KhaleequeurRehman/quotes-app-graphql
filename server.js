@@ -1,18 +1,22 @@
-import {ApolloServer} from "apollo-server-express"
+import {ApolloServer} from "apollo-server-express";
 import {
     ApolloServerPluginLandingPageGraphQLPlayground,
     ApolloServerPluginDrainHttpServer,
-    // ApolloServerPluginLandingPageDisabled
-} from 'apollo-server-core'
-import typeDefs from './schemaGql.js'
-import jwt from 'jsonwebtoken'
-import mongoose from 'mongoose'
-import dotenv from 'dotenv'
-import cors from 'cors'
+    ApolloServerPluginLandingPageDisabled
+} from 'apollo-server-core';
+import typeDefs from './schemaGql.js';
+import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import cors from 'cors';
 import express from 'express';
 import http from 'http';
-dotenv.config()
 import path from 'path';
+
+
+if(process.env.NODE_ENV !== "production"){
+    dotenv.config()
+ }
 
 const __dirname = path.resolve();
 
@@ -20,41 +24,34 @@ const port = process.env.PORT || 4000;
 const app = express();
 app.use(cors());
 const httpServer = http.createServer(app);
-
-
-// if(process.env.NODE_ENV !=="production"){
-//    dotenv.config()
-// }
  
 mongoose.connect(process.env.MONGO_URI,{
     useNewUrlParser:true,
     useUnifiedTopology:true
-})
+});
 
 mongoose.connection.on("connected",()=>{
-    console.log("connected to mongodb")
-})
+    console.log("connected to mongodb");
+});
 
 mongoose.connection.on("error",(err)=>{
-    console.log("error connecting",err)
-})
+    console.log("error connecting",err);
+});
 
 //import models here
-import './models/Quotes.js'
-import './models/User.js'
+import './models/Quotes.js';
+import './models/User.js';
 
-import resolvers from './resolvers.js'
+import resolvers from './resolvers.js';
 
 // this is middleware
-const context = ({req})=>{
+const context = ({req})=> {
     const { authorization } = req.headers;
     if(authorization){
      const {userId} = jwt.verify(authorization,process.env.JWT_SECRET)
-     console.log('userId -> ',userId)
      return {userId}
-    //  return {userId:'653f690cb596d3a5bc66e134'}
     }
-} 
+};
 
 const server = new ApolloServer({
     typeDefs,
@@ -62,19 +59,16 @@ const server = new ApolloServer({
     context,
     plugins:[
         ApolloServerPluginDrainHttpServer({ httpServer }),
-        ApolloServerPluginLandingPageGraphQLPlayground()
-        // process.env.NODE_ENV !=="production" ? 
-        // ApolloServerPluginLandingPageGraphQLPlayground() :
-        // ApolloServerPluginLandingPageDisabled()
+        process.env.NODE_ENV !=="production" ? ApolloServerPluginLandingPageGraphQLPlayground() : ApolloServerPluginLandingPageDisabled()
     ]
-})
+});
 
-// if(process.env.NODE_ENV=="production"){
-    app.use(express.static('client/build'))
+if(process.env.NODE_ENV === "production"){
+    app.use(express.static('client/build'));
     app.get("*",(req,res)=>{
-        res.sendFile(path.resolve(__dirname,'client','build','index.html'))
-    })
-// }
+        res.sendFile(path.resolve(__dirname,'client','build','index.html'));
+    });
+}
 
 await server.start();
 server.applyMiddleware({
@@ -86,4 +80,4 @@ server.applyMiddleware({
 
 httpServer.listen({port},()=>{
     console.log(`🚀  Server ready at ${port} ${server.graphqlPath}`);
-})
+});

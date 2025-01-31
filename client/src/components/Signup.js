@@ -1,11 +1,13 @@
-import React,{useState} from 'react'
-import {Link} from 'react-router-dom'
+import React,{useState} from 'react';
+import {Link, useNavigate} from 'react-router-dom';
 import { useMutation } from '@apollo/client';
 import { SIGNUP_USER } from '../gqloperations/mutations';
 
 export default function Signup() {
-    const [formData,setFormData] = useState({})
-    const [signupUser,{data,loading,error}] = useMutation(SIGNUP_USER)
+    const [formData,setFormData] = useState({});
+    const [signupUser,{data,loading,error}] = useMutation(SIGNUP_USER);
+
+    const navigate = useNavigate();
 
     if(loading) return <h1>Loading</h1>
 
@@ -13,18 +15,19 @@ export default function Signup() {
         setFormData({
          ...formData,
          [e.target.name]:e.target.value
-        })
+        });
     
     }
 
     const handleSubmit = (e)=>{
-        console.log('formData', formData)
-        e.preventDefault()
+        console.log('formData', formData);
+        e.preventDefault();
         signupUser({
             variables:{
                 userNew:formData
             }
-        })
+        });
+        navigate('/');
     }
     return (
         <div className="container my-container">
@@ -67,9 +70,9 @@ export default function Signup() {
                  onChange={handleChange}
                  required
                  />
-                  <Link to="/login"><p>Already have an account ?</p></Link> 
+                  <Link to="/"><p>Already have an account ?</p></Link> 
                  <button className="btn #673ab7 deep-purple" type="submit">Submit</button>
             </form>
         </div>
-    )
+    );
 }
