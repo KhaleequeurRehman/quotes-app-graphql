@@ -1,4 +1,5 @@
 import {gql} from "apollo-server"
+
 const typeDefs = gql`
  type Query{
     users:[User]
@@ -52,5 +53,6 @@ const typeDefs = gql`
     password:String!
  }
 
-`
-export default typeDefs
+`;
+
+export default typeDefs;

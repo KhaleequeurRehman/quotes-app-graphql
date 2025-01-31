@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
@@ -11,26 +11,13 @@ import {
   ApolloProvider,
 } from "@apollo/client";
 
-// const getTokenFromLocalStorage = () => {
-//   const token = localStorage.getItem("token")
-//   console.log('token=> ',token)
-//   if(token){
-//     return token
-//   }
-//   return localStorage.getItem("token")
-// }
-
 const client = new ApolloClient({
-  // uri: '/graphql',
-  uri: 'http://localhost:8080/graphql',
+  uri: `${process.env.REACT_APP_BASE_URL}/graphql`,
   cache: new InMemoryCache(),
   headers:{
     authorization:localStorage.getItem("token") || ""
-    // authorization: getTokenFromLocalStorage()
   }
 });
-
-
 
 ReactDOM.render(
   <React.StrictMode>
